@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js"></script>
+
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+<title>Lab 3</title>
+</head>
+<body>
+<style>
+#menu {
+background: #fff;
+position: absolute;
+z-index: 1;
+top: 10px;
+right: 10px;
+border-radius: 3px;
+width: 120px;
+border: 1px solid rgba(0, 0, 0, 0.4);
+font-family: 'Open Sans', sans-serif;
+}
+
+#menu a {
+font-size: 13px;
+color: #404040;
+display: block;
+margin: 0;
+padding: 0;
+padding: 10px;
+text-decoration: none;
+border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+text-align: center;
+}
+
+#menu a:last-child {
+border: none;
+}
+
+#menu a:hover {
+background-color: #f8f8f8;
+color: #404040;
+}
+
+#menu a.active {
+background-color: #3887be;
+color: #ffffff;
+}
+
+#menu a.active:hover {
+background: #3074a4;
+}
+</style>
+
+<nav id="menu"></nav>
+<div id="map"></div>
+
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoieTluaW5nIiwiYSI6ImNrbGxxdXpxMzAxd3kyd21mM2JqZ3dyZGEifQ.qDVDxbn2LsePNPHw97LSTg';
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        zoom: 10.5,
+        center: [-114.0719,51.0447]
+    });
+
+    map.on('load', function() {
+        map.addSource('Incidents', {
+            type: 'vector',
+            url: 'mapbox://y9ning.a3vygdzp'
+        });
+        map.addLayer({
+            'id': 'Incidents',
+            'type': 'circle',
+            'source': 'Incidents',
+            'source-layer': 'Traffic_Incidents_Archive_201-bd391x',
+            'layout': {
+                'visibility': 'visible'
+            },
+            'paint': {
+                'circle-color': '#eb3737',
+                'circle-radius': 4,
+								'circle-opacity': 0.6,
+
+            }
+        });
+    });
+
+    var toggleableLayerIds = ['Incidents'];
+
+    for (var i = 0; i < toggleableLayerIds.length; i++) {
+        var id = toggleableLayerIds[i];
+
+        var link = document.createElement('a');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function(e) {
+            var clickedLayer = this.textContent;
+            e.preventDefault();
+            e.stopPropagation();
+
+            var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+            if (visibility === 'visible') {
+                map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                this.className = '';
+            } else {
+                this.className = 'active';
+                map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+            }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+    }
+</script>
+
+
+</body>
+</html>
